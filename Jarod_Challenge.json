@@ -15,12 +15,12 @@
           "ConstraintDescription" : "Must be a valid EC2 instance type."
         },
         "InstanceCount" : {
-          "Description" : "Number of Servers",
+          "Description" : "Desired number of servers in the ASG",
           "Type" : "Number",
           "Default" : 1
         },
         "VpcId" : {
-          "Description" : "Number of WebServers",
+          "Description" : "VPC for this stack",
           "Type" : "AWS::EC2::VPC::Id"
         },
         "Subnets":{
