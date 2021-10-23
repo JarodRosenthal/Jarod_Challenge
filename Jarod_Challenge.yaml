@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Self-healing web site running on Spot EC2
+Description: Self-healing Apache server on discounted Spot EC2
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
@@ -26,7 +26,7 @@ Parameters:
     Type: 'List<AWS::EC2::Subnet::Id>'
     Default: 'subnet-76590d3b, subnet-840717ff, subnet-9c9d43f4'
   SSHLocation:
-    Description: ' The IP address range that can be used to SSH to the EC2 instances'
+    Description: 'The IP address range that can be used to SSH to the EC2 instances'
     Type: String
     MinLength: '9'
     MaxLength: '18'
