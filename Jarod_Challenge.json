@@ -24,7 +24,7 @@
           "Type" : "AWS::EC2::VPC::Id"
         },
         "Subnets":{
-            "Description" : "Subnets available for the ASG",
+            "Description" : "Must select 3 Subnets for the ASG",
             "Type":"List<AWS::EC2::Subnet::Id>"
         },
         "SSHLocation" : {
