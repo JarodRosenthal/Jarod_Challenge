@@ -1,10 +1,10 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Self-healing Apache server on discounted Spot EC2
+Description: Self-healing Apache web-server on discounted Spot EC2
 Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
-    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -20,19 +20,17 @@ Parameters:
   VpcId:
     Description: Number of WebServers
     Type: 'AWS::EC2::VPC::Id'
-    Default: vpc-1613c57e
   Subnets:
     Description: Subnets available for the ASG
     Type: 'List<AWS::EC2::Subnet::Id>'
-    Default: 'subnet-76590d3b, subnet-840717ff, subnet-9c9d43f4'
   SSHLocation:
-    Description: 'The IP address range that can be used to SSH to the EC2 instances'
+    Description: The IP address range that can be used to SSH to the EC2 instances
     Type: String
     MinLength: '9'
     MaxLength: '18'
     Default: 0.0.0.0/0
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
-    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x.
 Mappings:
   AWSInstanceType2Arch:
     t3.small:
@@ -41,13 +39,13 @@ Mappings:
       Arch: HVM64
   AWSRegionArch2AMI:
     us-east-1:
-      HVM64: ami-0be2609ba883822ec
+      HVM64: ami-02e136e904f3da870
     us-east-2:
       HVM64: ami-074cce78125f09d61
     us-west-1:
-      HVM64: ami-03130878b60947df3
+      HVM64: ami-03ab7423a204da002
     us-west-2:
-      HVM64: ami-0a36eb8fadc976275
+      HVM64: ami-013a129d325529d4d
 Resources:
   WebServer:
     Type: 'AWS::AutoScaling::AutoScalingGroup'
@@ -135,7 +133,7 @@ Resources:
           'Fn::Join':
             - |+
 
-            - - '#!/bin/bash -ex'
+            - - '#!/bin/bash -xe'
               - >-
                 #### (-x) print a trace of simple commands (-e) exit immediately
                 if a command fails
@@ -174,9 +172,7 @@ Resources:
                 sed -i '/^SSLCertificateKeyFile/ c#SSLCertificateKeyFile'
                 /etc/httpd/conf.d/ssl.conf
               - systemctl restart httpd
-              - >-
-                #### Verify web site is running within 3 minutes or a failure
-                will be signaled
+              - '#### Verify web site is running before proceeding'
               - >-
                 bash -c 'while [[ "$(curl -k -S -o /dev/null -w ''%{http_code}''
                 https://localhost:80/index.html)" != "200" ]]; do sleep 5; done
@@ -192,7 +188,7 @@ Resources:
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: HTTP/HTTPS open to the world and for SSH from home Ip.
+      GroupDescription: HTTP/HTTPS open to the world and SSH from home Ip.
       VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
