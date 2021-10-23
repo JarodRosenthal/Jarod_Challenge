@@ -4,7 +4,7 @@ Parameters:
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
-    ConstraintDescription: Must be the name of an existing EC2 KeyPair.
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -12,7 +12,7 @@ Parameters:
     AllowedValues:
       - t3.small
       - t3.medium
-    ConstraintDescription: Must be a valid EC2 instance type.
+    ConstraintDescription: Must be a valid EC2 instance type
   InstanceCount:
     Description: Desired number of servers in the ASG
     Type: Number
@@ -30,7 +30,7 @@ Parameters:
     MaxLength: '18'
     Default: 0.0.0.0/0
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
-    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x.
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x
 Mappings:
   AWSInstanceType2Arch:
     t3.small:
@@ -145,15 +145,15 @@ Resources:
                 trap '/opt/aws/bin/cfn-signal --exit-code 1 --stack
                 ${AWS::StackName} --resource WebServer --region ${AWS::Region}'
                 ERR >> /var/log/ops.out
-              - '#### Run cfn-init. This invokes the Metadata specified above.'
+              - '#### Run cfn-init. This invokes the Metadata specified above'
               - !Sub >-
                 /opt/aws/bin/cfn-init --region ${AWS::Region } --stack
                 ${AWS::StackName} --resource WebServerTemplate >>
                 /var/log/ops.out
-              - '#### Install and setup Apache web server.'
+              - '#### Install and setup Apache web server'
               - yum install httpd -y
               - systemctl start httpd && sudo systemctl enable httpd
-              - '#### Modify ownership and permissions.'
+              - '#### Modify ownership and permissions'
               - usermod -a -G apache ec2-user
               - 'chown -R ec2-user:apache /var/www'
               - '#### Redirects port 80 to 443'
@@ -177,7 +177,7 @@ Resources:
                 bash -c 'while [[ "$(curl -k -S -o /dev/null -w ''%{http_code}''
                 https://localhost:80/index.html)" != "200" ]]; do sleep 5; done
                 >> /var/log/ops.out'
-              - '#### Signals Success to CloudFormation.'
+              - '#### Signals Success to CloudFormation'
               - !Sub >-
                 /opt/aws/bin/cfn-signal --exit-code 0 --stack ${AWS::StackName}
                 --resource WebServer --region ${AWS::Region} >> /var/log/ops.out
@@ -188,7 +188,7 @@ Resources:
   WebServerSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
-      GroupDescription: HTTP/HTTPS open to the world and SSH from home Ip.
+      GroupDescription: HTTP/HTTPS open to the world and SSH from home Ip
       VpcId: !Ref VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
