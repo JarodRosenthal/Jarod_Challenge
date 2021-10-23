@@ -11,7 +11,7 @@
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
           "Default" : "t3.medium",
-          "AllowedValues" : [ "t3.micro", "t3.small", "t3.medium" ],
+          "AllowedValues" : [ "t3.small", "t3.medium" ],
           "ConstraintDescription" : "Must be a valid EC2 instance type."
         },
         "InstanceCount" : {
@@ -41,7 +41,6 @@
     },
     "Mappings" : {
         "AWSInstanceType2Arch" : {
-            "t3.micro"   :  { "Arch" : "HVM64"  },
             "t3.small"   :  { "Arch" : "HVM64"  },
             "t3.medium"  :  { "Arch" : "HVM64"  }
         },
@@ -63,7 +62,7 @@
                 ],
                 "Cooldown": 60,
                 "DesiredCapacity": { "Ref" : "InstanceCount" },
-                "HealthCheckGracePeriod": 120,
+                "HealthCheckGracePeriod": 30,
                 "HealthCheckType": "ELB",
                 "MaxSize": 1,
                 "MinSize": {"Ref": "InstanceCount"},
@@ -73,7 +72,7 @@
                         "LaunchTemplateSpecification": {
                             "LaunchTemplateName": {"Ref":"AWS::StackName"},
                             "Version": {"Fn::GetAtt" : ["WebServerTemplate","LatestVersionNumber"]}},
-                        "Overrides": [{"InstanceType": {"Ref": "InstanceType"}},{"InstanceType": "t3a.micro"}]},
+                        "Overrides": [{"InstanceType": {"Ref": "InstanceType"}},{"InstanceType": "t3a.small"}]},
                     "InstancesDistribution": {
                         "OnDemandBaseCapacity": 0,
                         "OnDemandPercentageAboveBaseCapacity": 0,
@@ -147,7 +146,7 @@
                           "Fn::Join":[
                               "\n",
                               [
-                                "#!/bin/bash -x",
+                                "#!/bin/bash -ex",
                                 "#### (-x) print a trace of simple commands (-e) exit immediately if a command fails",  
                                 "exec > >(tee /var/log/ops.out|logger -t user-data -s 2>/dev/console) 2>&1",
 
