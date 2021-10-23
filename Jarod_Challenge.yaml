@@ -144,7 +144,7 @@ Resources:
               - !Sub >-
                 trap '/opt/aws/bin/cfn-signal --exit-code 1 --stack
                 ${AWS::StackName} --resource WebServer --region ${AWS::Region}'
-                ERR > /var/log/ops.out
+                ERR >> /var/log/ops.out
               - '#### Run cfn-init. This invokes the Metadata specified above.'
               - !Sub >-
                 /opt/aws/bin/cfn-init --region ${AWS::Region } --stack

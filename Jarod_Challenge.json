@@ -149,7 +149,7 @@
                                 "exec > >(tee /var/log/ops.out|logger -t user-data -s 2>/dev/console) 2>&1",
 
                                 "#### Exit with failure signal if UserData errors",
-                                {"Fn::Sub": "trap '/opt/aws/bin/cfn-signal --exit-code 1 --stack ${AWS::StackName} --resource WebServer --region ${AWS::Region}' ERR > /var/log/ops.out"},
+                                {"Fn::Sub": "trap '/opt/aws/bin/cfn-signal --exit-code 1 --stack ${AWS::StackName} --resource WebServer --region ${AWS::Region}' ERR >> /var/log/ops.out"},
 
                                 "#### Run cfn-init. This invokes the Metadata specified above.",
                                 {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region } --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
