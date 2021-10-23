@@ -13,10 +13,6 @@ Parameters:
       - t3.small
       - t3.medium
     ConstraintDescription: Must be a valid EC2 instance type
-  InstanceCount:
-    Description: Desired number of servers in the ASG
-    Type: Number
-    Default: 1
   VpcId:
     Description: VPC for this stack
     Type: 'AWS::EC2::VPC::Id'
@@ -55,11 +51,11 @@ Resources:
         - !Sub '${AWS::Region}b'
         - !Sub '${AWS::Region}c'
       Cooldown: 60
-      DesiredCapacity: !Ref InstanceCount
+      DesiredCapacity: 1
       HealthCheckGracePeriod: 30
       HealthCheckType: ELB
       MaxSize: 1
-      MinSize: !Ref InstanceCount
+      MinSize: 1
       VPCZoneIdentifier: !Ref Subnets
       MixedInstancesPolicy:
         LaunchTemplate:
