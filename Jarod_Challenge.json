@@ -153,7 +153,7 @@
                                 "yum install httpd -y",
                                 "systemctl start httpd && sudo systemctl enable httpd",
 
-                                "#### Modify group membership and ownership of web root to include ec2-user",
+                                "#### Add ec2-user to Apache group and ownership of web root",
                                 "usermod -a -G apache ec2-user",
                                 "chown -R ec2-user:apache /var/www",
 
