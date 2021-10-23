@@ -169,7 +169,7 @@
                                 "sed -i '/^SSLCertificateKeyFile/ c#SSLCertificateKeyFile' /etc/httpd/conf.d/ssl.conf",
                                 "systemctl restart httpd",
                                 
-                                "#### Validate correct server configuration before proceeding",
+                                "#### Validate correct server configuration, requires HTTP 200 code to proceed",
                                 "bash -c 'while [[ \"$(curl -k -S -o /dev/null -w ''%{http_code}'' https://localhost/index.html)\" != \"200\" ]]; do sleep 5; done >> /var/log/ops.out'",
 
                                 "#### Signals Success to CloudFormation",
