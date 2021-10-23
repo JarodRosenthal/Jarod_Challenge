@@ -1,4 +1,4 @@
-#Challenge
+## Challenge
 
 CloudFormation template to stand up a secure web server using a self signed certificate. 
 
