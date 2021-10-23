@@ -153,7 +153,7 @@
                                 "yum install httpd -y",
                                 "systemctl start httpd && sudo systemctl enable httpd",
 
-                                "#### Modify ownership and permissions",
+                                "#### Modify group membership and ownership of web root to include ec2-user",
                                 "usermod -a -G apache ec2-user",
                                 "chown -R ec2-user:apache /var/www",
 
@@ -162,7 +162,7 @@
                                 "sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -o lo -j REDIRECT --to-ports 443",
                                 "sudo sh -c 'iptables-save > /etc/iptables.rules'",
 
-                                "#### Sets up self-signed certificate",
+                                "#### Set up self-signed certificate",
                                 "yum install -y mod_ssl",
                                 "cd /etc/pki/tls/certs",
                                 "./make-dummy-cert localhost.crt",
@@ -172,7 +172,7 @@
                                 "#### Validate correct server configuration, requires HTTP 200 code to proceed",
                                 "bash -c 'while [[ \"$(curl -k -S -o /dev/null -w ''%{http_code}'' https://localhost/index.html)\" != \"200\" ]]; do sleep 5; done >> /var/log/ops.out'",
 
-                                "#### Signals Success to CloudFormation",
+                                "#### Signal Success to CloudFormation",
                                 {"Fn::Sub": "/opt/aws/bin/cfn-signal --exit-code 0 --stack ${AWS::StackName} --resource WebServer --region ${AWS::Region} >> /var/log/ops.out"}
                                 ]
                             ]
