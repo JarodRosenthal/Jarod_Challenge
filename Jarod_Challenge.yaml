@@ -21,7 +21,7 @@ Parameters:
     Description: VPC for this stack
     Type: 'AWS::EC2::VPC::Id'
   Subnets:
-    Description: Must select 3 Subnets!
+    Description: Must select 3 Subnets for the ASG
     Type: 'List<AWS::EC2::Subnet::Id>'
   SSHLocation:
     Description: The IP address range that can be used to SSH to the EC2 instances
@@ -172,7 +172,7 @@ Resources:
                 sed -i '/^SSLCertificateKeyFile/ c#SSLCertificateKeyFile'
                 /etc/httpd/conf.d/ssl.conf
               - systemctl restart httpd
-              - '#### Verify web site is running before proceeding'
+              - '#### Validate correct server configuration before proceeding'
               - >-
                 bash -c 'while [[ "$(curl -k -S -o /dev/null -w ''%{http_code}''
                 https://localhost:80/index.html)" != "200" ]]; do sleep 5; done
