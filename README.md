@@ -6,7 +6,7 @@ CloudFormation template to stand up a secure web server using a self signed cert
 
 Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html#cliv2-linux-install) CLI to deploy template.
 
-## Usage
+## Usage Example
 
 ```bash
 aws cloudformation create-stack --stack-name MyStack --template-body file://your_template.json --parameters \
