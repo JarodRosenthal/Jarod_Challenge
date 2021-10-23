@@ -34,14 +34,14 @@
     },
     "Mappings" : {
         "AWSInstanceType" : {
-            "t3.small"   :  { "VM" : "HVM64"  },
-            "t3.medium"  :  { "VM" : "HVM64"  }
+            "t3.small" : {"VM" : "HVM64"},
+            "t3.medium" : {"VM" : "HVM64"}
         },
         "AWSRegionAMI" : {
-            "us-east-1"        : {"HVM64" : "ami-02e136e904f3da870"},
-            "us-east-2"        : {"HVM64" : "ami-074cce78125f09d61"},
-            "us-west-1"        : {"HVM64" : "ami-03ab7423a204da002"},
-            "us-west-2"        : {"HVM64" : "ami-013a129d325529d4d"}
+            "us-east-1" : {"HVM64" : "ami-02e136e904f3da870"},
+            "us-east-2" : {"HVM64" : "ami-074cce78125f09d61"},
+            "us-west-1" : {"HVM64" : "ami-03ab7423a204da002"},
+            "us-west-2" : {"HVM64" : "ami-013a129d325529d4d"}
         }
     },
     "Resources": {     
