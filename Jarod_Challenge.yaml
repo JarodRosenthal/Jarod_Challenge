@@ -175,8 +175,8 @@ Resources:
               - '#### Validate correct server configuration before proceeding'
               - >-
                 bash -c 'while [[ "$(curl -k -S -o /dev/null -w ''%{http_code}''
-                https://localhost:80/index.html)" != "200" ]]; do sleep 5; done
-                >> /var/log/ops.out'
+                https://localhost/index.html)" != "200" ]]; do sleep 5; done >>
+                /var/log/ops.out'
               - '#### Signals Success to CloudFormation'
               - !Sub >-
                 /opt/aws/bin/cfn-signal --exit-code 0 --stack ${AWS::StackName}
