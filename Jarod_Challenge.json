@@ -117,6 +117,25 @@
                                 "mode":"000666",
                                 "owner":"ec2-user",
                                 "group":"ec2-user"
+                            },
+                            "/home/ec2-user/insert.txt":{
+                                "content":{
+                                    "Fn::Join":[
+                                        "\n",
+                                        [
+                                            "<VirtualHost *:80>",
+                                                "DocumentRoot '/var/www/html'",
+                                                "ServerName 18.190.59.235",
+                                                "ServerAlias 18.190.59.235",
+                                                "Redirect permanent / https://18.190.59.235/",
+                                            "</VirtualHost>",
+                                            ""
+                                        ]
+                                    ]
+                                },
+                                "mode":"000666",
+                                "owner":"ec2-user",
+                                "group":"ec2-user"
                             }   
                         }
                     }
@@ -128,6 +147,7 @@
                   "ImageId" : { "Fn::FindInMap" : [ "AWSRegionAMI", { "Ref" : "AWS::Region" }, "HVM64" ] },
                   "InstanceType"   : { "Ref" : "InstanceType" },
                   "KeyName"        : { "Ref" : "KeyName" },
+                  "IamInstanceProfile": {"Name": "StackInstancesRole"},
                   "SecurityGroupIds": [ {"Ref": "WebServerSecurityGroup"} ],
                   "TagSpecifications": [{"ResourceType" : "volume", "Tags": [{"Key": "Name", "Value": {"Ref":"AWS::StackName"}}]}],
                   "UserData":{
@@ -145,26 +165,30 @@
                                 "#### Run cfn-init. This invokes the Metadata specified above",
                                 {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region } --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
 
+                                "#### Associate Elastic Ip address for DNS record",
+                                {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id eipalloc-09092288e789cf174"},
+
                                 "#### Install and setup Apache web server",
                                 "yum install httpd -y",
-                                "systemctl start httpd && sudo systemctl enable httpd",
 
                                 "#### Add ec2-user to Apache group and ownership of web root",
                                 "usermod -a -G apache ec2-user",
                                 "chown -R ec2-user:apache /var/www",
+                                "chmod 2775 /var/www && find /var/www -type d -exec sudo chmod 2775 {} \\;",
+                                "find /var/www -type f -exec sudo chmod 0664 {} \\;",
+                                "systemctl enable httpd",
 
-                                "#### Redirects port 80 to 443",
-                                "sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 443",
-                                "sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -o lo -j REDIRECT --to-ports 443",
-                                "sudo sh -c 'iptables-save > /etc/iptables.rules'",
+                                "#### Set up SSL certificate",
+                                "wget -r --no-parent -A 'epel-release-*.rpm' https://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/",
+                                "rpm -Uvh dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-*.rpm",
+                                "yum-config-manager --enable epel*",
+                                "yum install -y certbot python2-certbot-apache",
 
-                                "#### Set up self-signed certificate",
-                                "yum install -y mod_ssl",
-                                "cd /etc/pki/tls/certs",
-                                "./make-dummy-cert localhost.crt",
-                                "sed -i '/^SSLCertificateKeyFile/ c#SSLCertificateKeyFile' /etc/httpd/conf.d/ssl.conf",
-                                "systemctl restart httpd",
-                                
+                                "#### Redirects HTTP to HTTPS",
+                                "sed '43r /home/ec2-user/insert.txt' < /etc/httpd/conf/httpd.conf > /etc/httpd/conf/httpd.tmp",
+                                "rm -rf /etc/httpd/conf/httpd.conf && mv /etc/httpd/conf/httpd.tmp /etc/httpd/conf/httpd.conf",
+                                "systemctl start httpd",
+
                                 "#### Validate correct server configuration, requires HTTP 200 code to proceed",
                                 "bash -c 'while [[ \"$(curl -k -S -o /dev/null -w ''%{http_code}'' https://localhost/index.html)\" != \"200\" ]]; do sleep 5; done >> /var/log/ops.out'",
 
