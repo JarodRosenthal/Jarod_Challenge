@@ -7,6 +7,11 @@
           "Type": "AWS::EC2::KeyPair::KeyName",
           "ConstraintDescription" : "Must be the name of an existing EC2 KeyPair"
         },
+        "EipId": {
+            "Description" : "Elastic Ip allocation Id",
+            "Type": "String",
+            "Default" : "eipalloc-09092288e789cf174"
+        },
         "InstanceType" : {
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
@@ -123,6 +128,7 @@
                                     "Fn::Join":[
                                         "\n",
                                         [
+                                            "",
                                             "<VirtualHost *:80>",
                                                 "DocumentRoot '/var/www/html'",
                                                 "ServerName 18.190.59.235",
@@ -166,7 +172,7 @@
                                 {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region } --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
 
                                 "#### Associate Elastic Ip address for DNS record",
-                                {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id eipalloc-09092288e789cf174"},
+                                {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id ${EipId}"},
 
                                 "#### Install and setup Apache web server",
                                 "yum install httpd -y",
