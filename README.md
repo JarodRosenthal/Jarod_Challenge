@@ -17,7 +17,7 @@ CloudFormation template to stand up a secure web server using a self signed cert
 </html>
 ```
 - [x] Secure this application and host such that only appropriate ports are publicly exposed and any http
-requests are redirected to https. This should be automated using a configuration management tool of your choice and you should feel free to use a self-signed certificate for the web server.
+requests are redirected to https. You should feel free to use a self-signed certificate for the web server.
 - [x] Develop and apply autoamted tests to validate the correctness of the server configuration.
 Express everything in code
 - [x] Provide your code in an https://github.com repo named <YOUR_FIRSTNAME>_Challenge
