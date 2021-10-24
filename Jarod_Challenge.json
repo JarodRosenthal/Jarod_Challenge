@@ -189,7 +189,7 @@
                                 "rm -rf /etc/httpd/conf/httpd.conf && mv /etc/httpd/conf/httpd.tmp /etc/httpd/conf/httpd.conf",
                                 "systemctl start httpd",
 
-                                "#### Validate correct server configuration, requires HTTP 200 code to proceed",
+                                "#### Validate correct server configuration, requires HTTPS 200 and HTTP 301 code to proceed",
                                 "bash -c 'while [[ \"$(curl -k -S -o /dev/null -w ''%{http_code}'' https://localhost/index.html)\" != \"200\" ]]; do sleep 5; done >> /var/log/ops.out'",
                                 "bash -c 'while [[ \"$(curl -S -o /dev/null -w ''%{http_code}'' http://localhost/index.html)\" != \"301\" ]]; do sleep 5; done >> /var/log/ops.out'",
 
