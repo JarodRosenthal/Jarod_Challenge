@@ -31,6 +31,15 @@ An automated validation test is applied in the UserData section. There is a whil
 ## Notes
 To work around the lack of a domain with a self-signed certificate. An existing IAM role is attached to the instance to provide permission to associate an EIP. This allows a predictable IP to be applied to the virtual host configuration in httpd.conf. This enables Apache to handle HTTP to HTTPS redirection. In the original iteration iptables were used to perform that function. While it worked, it also resulted in an error from Apache when connecting to port 80 using HTTP since it was unaware of the redirection. 
 
+```html
+<VirtualHost *:80> 
+    DocumentRoot "/var/www/html"
+    ServerName "18.190.x.x"
+    ServerAlias "18.190.x.x"
+    Redirect permanent / https://18.190.x.x/
+</VirtualHost>
+```
+
 ## Future Scaling
 To scale this application you would associate the ASG with a target group and place it behind an Elastic Load Balancer. Then utilize CloudWatch advanced tracking metrics such as Target Request Count to distribute incoming requests to individual targets. 
  
