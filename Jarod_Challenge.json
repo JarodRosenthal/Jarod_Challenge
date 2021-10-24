@@ -130,10 +130,10 @@
                                         [
                                             "",
                                             "<VirtualHost *:80>",
-                                                "DocumentRoot '/var/www/html'",
-                                                "ServerName 18.190.59.235",
-                                                "ServerAlias 18.190.59.235",
-                                                "Redirect permanent / https://18.190.59.235/",
+                                            "   DocumentRoot '/var/www/html'",
+                                            "   ServerName 18.190.59.235",
+                                            "   ServerAlias 18.190.59.235",
+                                            "   Redirect permanent / https://18.190.59.235/",
                                             "</VirtualHost>",
                                             ""
                                         ]
