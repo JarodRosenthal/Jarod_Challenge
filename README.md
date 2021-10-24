@@ -17,13 +17,19 @@ CloudFormation template to stand up a secure web server using a self signed cert
 </html>
 ```
 - [x] Secure this application and host such that only appropriate ports are publicly exposed and any http
-requests are redirected to https. You should feel free to use a self-signed certificate for the web server.
-- [x] Develop and apply autoamted tests to validate the correctness of the server configuration.
+requests are redirected to https. This should be automated using a configuration management tool of your choice and you should feel free to use a self-signed certificate for the web server.
+- [x] Develop and apply automated tests to validate the correctness of the server configuration.
 Express everything in code
 - [x] Provide your code in an https://github.com repo named <YOUR_FIRSTNAME>_Challenge
 
-## Deployment
+## Solution
+For this challenge I selected CloudFormation as the IaC management tool. The roll back capability CloudFormation offers will be helpful when performing automated smoke tests. In the template we create an Apache web server running on an Amazon Linux AMI. I picked Amazon Linux since it comes with agents and cli tools pre-installed. The web server sits in an ASG. I'm stingy, so we are using Spot instances for the stateless application. We create a security group to allow open access for Apache and SSH via an IP using a /32 bit mask. Apache has a self signed certificate and is setup to redirects HTTP to HTTPS. 
 
+## Validation
+An automated validation test is applied in the UserData section. There is a while loop that curls to HTTPS for the index.html file. It checks every 5 seconds until a 200 code is returned. If not received within 3 minutes, the creation policy will timeout and automatically roll back the changes and signal failure. If the HTTPS curl to port 80 is successful, we know Apache is running, that the index.html file has been created, and HTTP to HTTPS redirection is working. 
+
+ 
+## Deployment
 
 Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html#cliv2-linux-install) CLI to deploy template.
 
@@ -38,3 +44,6 @@ ParameterKey=VpcId,ParameterValue=vpc-xxxxxxxx
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
