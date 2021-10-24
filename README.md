@@ -28,6 +28,11 @@ For this challenge I selected CloudFormation as the IaC management tool. The rol
 ## Validation
 An automated validation test is applied in the UserData section. There is a while loop that curls to HTTPS for the index.html file. It checks every 5 seconds until a 200 code is returned. If not received within 3 minutes, the creation policy will timeout and automatically roll back the changes and signal failure. If the HTTPS curl to port 80 is successful, we know Apache is running, that the index.html file has been created, and HTTP to HTTPS redirection is working. 
 
+## Notes
+To work around the lack of a domain with a self-signed certificate. We attach an Elastic IP address to the instance. This allows a predictable IP to be applied, which in turn allows the virtual host configuration in httpd.conf to be completed which allows for Apache to handle HTTP to HTTPS redirection. In the original iteration iptables was used to perform that function. While it worked, it also resulted in an error from Apache when connecting to port 80 using HTTP since it was unaware of the redirection. 
+
+## Future Scaling
+To scale this application we would associate the ASG with a target group and place it behind an Elastic Load Balancer. Then utilize CloudWatch advanced tracking metrics such as Target Request Count to distribute incoming requests to individual targets. 
  
 ## Deployment
 
