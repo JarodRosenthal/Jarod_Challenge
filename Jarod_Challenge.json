@@ -195,7 +195,7 @@
                                 "rm -rf /etc/httpd/conf/httpd.conf && mv /etc/httpd/conf/httpd.tmp /etc/httpd/conf/httpd.conf",
                                 "systemctl start httpd",
 
-                                "#### Validate correct server configuration, requires HTTPS 200 and HTTP 301 code, and validates website to proceed to the next step",
+                                "#### Validate correct server configuration, validates website text, and requires HTTPS 200 and HTTP 301 codes to proceed to the next step",
                                 "bash -c 'while [[ \"$(curl -k -S -o /dev/null -w ''%{http_code}'' https://localhost/index.html)\" != \"200\" ]]; do sleep 5; done >> /var/log/ops.out'",
                                 "bash -c 'while [[ \"$(curl -S -o /dev/null -w ''%{http_code}'' http://localhost/index.html)\" != \"301\" ]]; do sleep 5; done >> /var/log/ops.out'",
                                 "if grep -q 'We are SecNet' \"/var/www/html/index.html\"; then echo \"Success\"; else exit 1; fi >> /var/log/ops.out",
