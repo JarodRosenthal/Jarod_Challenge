@@ -17,6 +17,11 @@
             "Type": "String",
             "Default" : "18.190.59.235"
         },
+        "IamRoleName": {
+            "Description" : "Name of IAM role to use for attaching EIP",
+            "Type": "String",
+            "Default" : "StackInstancesRole"
+        },
         "InstanceType" : {
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
@@ -158,7 +163,7 @@
                   "ImageId" : { "Fn::FindInMap" : [ "AWSRegionAMI", { "Ref" : "AWS::Region" }, "HVM64" ] },
                   "InstanceType"   : { "Ref" : "InstanceType" },
                   "KeyName"        : { "Ref" : "KeyName" },
-                  "IamInstanceProfile": {"Name": "StackInstancesRole"},
+                  "IamInstanceProfile": {"Name": { "Ref": "IamRoleName"}},
                   "SecurityGroupIds": [ {"Ref": "WebServerSecurityGroup"} ],
                   "TagSpecifications": [{"ResourceType" : "volume", "Tags": [{"Key": "Name", "Value": {"Ref":"AWS::StackName"}}]}],
                   "UserData":{
