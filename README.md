@@ -48,7 +48,7 @@ To scale this application you would associate the ASG with a target group and pl
 Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html#cliv2-linux-install) CLI to deploy template.
 
 ## Dependencies
-To work around the lack of a FQDN an EIP is used in place of a domain name. You will need to allocate an EIP and pass in the allocation Id and Ip address as stack parameters. Also, the name of an existing IAM role with the below permissions must be passed in as a parameter. 
+You will need to allocate an EIP and pass in the allocation Id and Ip address as stack parameters. Also, the name of an existing IAM role with the below permissions must be passed in as a parameter. 
 
 In the real world we would have a FQDN that would resolve to an IP using DNS. 
 
