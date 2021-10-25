@@ -50,7 +50,7 @@ Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/in
 ## Usage
 
 ```bash
-aws cloudformation create-stack --stack-name MyStack --template-body file://your_template.json --parameters \
+aws cloudformation create-stack --stack-name MyStack --template-body file://file.json --parameters \
 ParameterKey=KeyName,ParameterValue=<your_key> \
 ParameterKey=Subnets,ParameterValue=subnet-xxxxxxxx\\,subnet-xxxxxxxx\\,subnet-xxxxxxxx \
 ParameterKey=VpcId,ParameterValue=vpc-xxxxxxxx \
