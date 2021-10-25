@@ -2,52 +2,68 @@
 
 import math
 
-class Complex(object):
+class Complex:
     def __init__(self, real, imag):
         self.real = real
         self.imag = imag
-        
-    def __add__(self, no):
-        real = self.real + no.real
-        imag = self.imag + no.imag
-        return Complex(real, imag)
-
-        
-    def __sub__(self, no):
-        real = self.real - no.real
-        imag = self.imag - no.imag
-        return Complex(real, imag)
-        
-    def __mul__(self, no):
-        real = self.real * no.real
-        imag = self.imag * no.imag
-        return Complex(real, imag)
-
-    def __truediv__(self, no):
-        real = self.real / no.real
-        imag = self.imag / no.imag
-        return Complex(real, imag)
-
-    def mod(self):
-        real = self.real % no.real
-        imag = self.imag % no.imag
-        return Complex(real, imag)
-
+    
     def __str__(self):
-        if self.imag == 0:
-            result = "%.2f+0.00i" % (self.real)
-        elif self.real == 0:
-            if self.imag >= 0:
-                result = "0.00+%.2fi" % (self.imag)
+        ret = ""
+        real_str = "%.2f" % self.real
+        imag_str = "%.2f" % self.imag
+        if self.real > 0 or self.real < 0:
+            ret += real_str
+        if self.imag > 0 or self.imag < 0:
+            if self.imag > 0:
+                if ret != "":
+                    ret += " + " + imag_str + "i"
+                else:
+                    ret += imag_str + "i"
             else:
-                result = "0.00-%.2fi" % (abs(self.imag))
-        elif self.imag > 0:
-            result = "%.2f+%.2fi" % (self.real, self.imag)
-        else:
-            result = "%.2f-%.2fi" % (self.real, abs(self.imag))
-        return result
+                if ret != "":
+                    new_imag = -1 * self.imag
+                    imag_str = "%.2f" % new_imag
+                    ret += " - " + imag_str + "i"
+                else:
+                    ret += imag_str + "i"
+        if ret == "":
+            ret += real_str
+        return ret
+    
+    def __add__(self, other):       
+        new_real = self.real + other.real
+        new_imag = self.imag + other.imag
+        new_complex = Complex(new_real,new_imag)
+        return str(new_complex)
+    def __sub__(self, other):
+        new_real = self.real - other.real
+        new_imag = self.imag - other.imag
+        new_complex = Complex(new_real,new_imag)
+        return str(new_complex)
+    def __mul__(self, other):
+        new_real = (self.real * other.real) - (self.imag * other.imag)
+        new_imag = (self.real * other.imag) + (self.imag * other.real)
+        new_complex = Complex(new_real,new_imag)
+        return str(new_complex)
+    def __div__(self, other):
+        divisor = (other.real ** 2) + (other.imag ** 2)
+        new_real = ((self.real * other.real) + (self.imag * other.imag)) / divisor
+        new_imag = ((self.imag * other.real) - (self.real * other.imag)) / divisor
+        new_complex = Complex(new_real,new_imag)
+        return str(new_complex)
+    def mod(self):
+        new_real = math.sqrt(self.real ** 2 + self.imag ** 2)
+        new_complex = Complex(new_real, 0.0)
+        return str(new_complex)
 
-if __name__ == '__main__':
-     parts = input('').split(' ')
-     output = Complex(float(parts[0]), float(parts[1]))
-     print(output)
+a = [float(x) for x in raw_input().split(' ')]
+b = [float(x) for x in raw_input().split(' ')]
+ca = Complex(a[0],a[1])
+cb = Complex(b[0],b[1])
+print ca + cb
+print ca - cb 
+print ca * cb
+print ca / cb
+print ca.mod()
+print cb.mod()
+
