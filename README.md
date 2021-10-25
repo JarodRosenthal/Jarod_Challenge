@@ -47,6 +47,8 @@ To scale this application you would associate the ASG with a target group and pl
 
 Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html#cliv2-linux-install) CLI to deploy template.
 
+## Dependencies
+To work around the lack of a FQDN an EIP is used in place of a domain name. You will need to allocate an EIP and pass in the allocation Id and Ip address as stack parameters. An IAM policy is created in the template to allow the EC2 instance to associate the EIP. 
 ## Usage
 
 ```bash
@@ -54,7 +56,8 @@ aws cloudformation create-stack --stack-name MyStack --template-body file://file
 ParameterKey=KeyName,ParameterValue=<your_key> \
 ParameterKey=Subnets,ParameterValue=subnet-xxxxxxxx\\,subnet-xxxxxxxx\\,subnet-xxxxxxxx \
 ParameterKey=VpcId,ParameterValue=vpc-xxxxxxxx \
-ParameterKey=SSHLocation,ParameterValue=x.x.x.x/32
+ParameterKey=SSHLocation,ParameterValue=x.x.x.x/32 \
+--capabilities CAPABILITY_NAMED_IAM
 ```
 
 ## Contributing
