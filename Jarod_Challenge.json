@@ -12,6 +12,11 @@
             "Type": "String",
             "Default" : "eipalloc-09092288e789cf174"
         },
+        "IpAddress": {
+            "Description" : "Elastic Ip address",
+            "Type": "String",
+            "Default" : "18.190.59.235"
+        },
         "InstanceType" : {
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
@@ -131,9 +136,9 @@
                                             "",
                                             "<VirtualHost *:80>",
                                             "   DocumentRoot '/var/www/html'",
-                                            "   ServerName 18.190.59.235",
-                                            "   ServerAlias 18.190.59.235",
-                                            "   Redirect permanent / https://18.190.59.235/",
+                                            {"Fn::Sub": "   ServerName ${IpAddress}"},
+                                            {"Fn::Sub": "   ServerAlias ${IpAddress}"},
+                                            {"Fn::Sub": "   Redirect permanent / https://${IpAddress}/}"},
                                             "</VirtualHost>",
                                             ""
                                         ]
@@ -169,7 +174,7 @@
                                 {"Fn::Sub": "trap '/opt/aws/bin/cfn-signal --exit-code 1 --stack ${AWS::StackName} --resource WebServer --region ${AWS::Region}' ERR >> /var/log/ops.out"},
 
                                 "#### Run cfn-init. This invokes the Metadata specified above",
-                                {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region } --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
+                                {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region} --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
 
                                 "#### Associate Elastic Ip address for DNS record",
                                 {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id ${EipId}"},
