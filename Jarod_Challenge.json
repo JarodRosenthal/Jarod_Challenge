@@ -17,11 +17,6 @@
             "Type": "String",
             "Default" : "18.190.59.235"
         },
-        "IamRoleName": {
-            "Description" : "Name of IAM role to use for attaching EIP",
-            "Type": "String",
-            "Default" : "StackInstancesRole"
-        },
         "InstanceType" : {
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
@@ -58,6 +53,7 @@
     "Resources": {     
         "WebServer": {
             "Type": "AWS::AutoScaling::AutoScalingGroup",
+            "DependsOn" : "EipRole",
             "Properties": {
                 "AvailabilityZones": [
                     {"Fn::Sub": "${AWS::Region}a"},
@@ -163,7 +159,7 @@
                   "ImageId" : { "Fn::FindInMap" : [ "AWSRegionAMI", { "Ref" : "AWS::Region" }, "HVM64" ] },
                   "InstanceType"   : { "Ref" : "InstanceType" },
                   "KeyName"        : { "Ref" : "KeyName" },
-                  "IamInstanceProfile": {"Name": { "Ref": "IamRoleName"}},
+                  "IamInstanceProfile": {"Name": {"Fn::Sub" : "${WebServerProfile}"}},
                   "SecurityGroupIds": [ {"Ref": "WebServerSecurityGroup"} ],
                   "TagSpecifications": [{"ResourceType" : "volume", "Tags": [{"Key": "Name", "Value": {"Ref":"AWS::StackName"}}]}],
                   "UserData":{
@@ -231,6 +227,57 @@
               {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}}
             ]
           }      
+        },
+        "WebServerProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "DependsOn": "EipRole",
+            "Properties": {
+                "Path": "/",
+                "Roles": [ {
+                    "Ref": "EipRole"
+                } ]
+            }
+        },
+        "EipRole": {
+            "Type": "AWS::IAM::Role",
+            "Metadata": {
+                "Comment": "To allow EIP association"
+            },
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": ["ec2.amazonaws.com"]
+                            },
+                            "Action": ["sts:AssumeRole"]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "Policies": [
+                    {
+                        "PolicyName": "AllowEIP",
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "ec2:DescribeInstances",
+                                        "ec2:AssociateAddress",
+                                        "ec2:DescribeAddresses",
+                                        "ec2:AllocateAddress"
+                                    ],
+                                    "Resource": "*" 
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }          
     }
 }
