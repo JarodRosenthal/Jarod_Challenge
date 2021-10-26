@@ -29,7 +29,7 @@ For this challenge CloudFormation was selected as the IaC management tool. The r
 An automated validation test is applied in the UserData section. There are two while loops that curl using HTTPS and HTTP to the index.html file. It checks every 5 seconds until a 200 success code for HTTPS and a 301 redirection code for HTTP are returned. If not received within 3 minutes the creation policy will timeout and automatically roll back the changes and signal failure. A final check is performed to look for the words "We are SecNet!" in the index.html file. If successful, we know Apache is running, that the index.html file has been created, and that redirection from HTTP to HTTPS is working. Once CloudFormation receives a success signal the deployment then completes. 
 
 ## Notes
-To work around the lack of a domain with a self-signed certificate. An existing IAM role is attached to the instance to provide permission to associate an EIP. This allows a predictable IP to be applied to the virtual host configuration in httpd.conf. This enables Apache to handle HTTP to HTTPS redirection. In the original iteration iptables were used to perform that function. While it worked, it also resulted in an error from Apache when connecting to port 80 using HTTP since it was unaware of the redirection. 
+To work around the lack of a domain with a self-signed certificate. An IAM role is attached to the instance to provide permission to associate an EIP. This allows a predictable IP to be applied to the virtual host configuration in httpd.conf. This enables Apache to handle HTTP to HTTPS redirection. 
 
 ```html
 <VirtualHost *:80> 
