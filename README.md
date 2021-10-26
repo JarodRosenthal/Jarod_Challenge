@@ -58,8 +58,7 @@ ParameterKey=SSHLocation,ParameterValue=x.x.x.x/32 \
 --capabilities CAPABILITY_NAMED_IAM
 ```
 
-Once deployed the Elastic Ip address can be returned by running
-Input
+Once deployed the Elastic Ip address can be returned by running.
 ```bash
 aws cloudformation describe-stacks --stack-name <your_stack_name> --query Stacks[].Outputs
 ```
