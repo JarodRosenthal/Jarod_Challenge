@@ -70,7 +70,7 @@ Output
             "OutputKey": "EIPaddress",
             "OutputValue": "18.116.x.x",
             "Description": "Elastic Ip address",
-            "ExportName": "SecNet11-EIP"
+            "ExportName": "SecNet-EIP"
         }
     ]
 ]
