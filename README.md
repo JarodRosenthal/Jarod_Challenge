@@ -47,24 +47,6 @@ To scale this application you would associate the ASG with a target group and pl
 
 Use the AWS console or [AWS](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html#cliv2-linux-install) CLI to deploy template.
 
-## Dependencies
-You will need to allocate an EIP and pass in the allocation Id and Ip address as stack parameters. In the real world we would have a FQDN that would resolve to an IP using DNS. 
-
-e.g.
-```text
- "Statement": [
-     {
-         "Effect": "Allow",
-         "Action": [
-             "ec2:DescribeInstances",
-             "ec2:AssociateAddress",
-             "ec2:DescribeAddresses",
-             "ec2:AllocateAddress"
-         ],
-         "Resource": "*"                            
-     }
- ]
-```
 ## Usage
 
 ```bash
@@ -74,6 +56,25 @@ ParameterKey=Subnets,ParameterValue=subnet-xxxxxxxx\\,subnet-xxxxxxxx\\,subnet-x
 ParameterKey=VpcId,ParameterValue=vpc-xxxxxxxx \
 ParameterKey=SSHLocation,ParameterValue=x.x.x.x/32 \
 --capabilities CAPABILITY_NAMED_IAM
+```
+
+Once deployed the Elastic Ip address can be returned by running
+Input
+```bash
+aws cloudformation describe-stacks --stack-name <your_stack_name> --query Stacks[].Outputs
+```
+Output
+```bash
+[
+    [
+        {
+            "OutputKey": "EIPaddress",
+            "OutputValue": "18.116.x.x",
+            "Description": "Elastic Ip address",
+            "ExportName": "SecNet11-EIP"
+        }
+    ]
+]
 ```
 
 ## Contributing
