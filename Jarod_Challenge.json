@@ -7,16 +7,6 @@
           "Type": "AWS::EC2::KeyPair::KeyName",
           "ConstraintDescription" : "Must be the name of an existing EC2 KeyPair"
         },
-        "EipId": {
-            "Description" : "Elastic Ip allocation Id",
-            "Type": "String",
-            "Default" : "eipalloc-09092288e789cf174"
-        },
-        "IpAddress": {
-            "Description" : "Elastic Ip address",
-            "Type": "String",
-            "Default" : "18.190.59.235"
-        },
         "InstanceType" : {
           "Description" : "WebServer EC2 instance type",
           "Type" : "String",
@@ -48,6 +38,13 @@
             "us-east-2" : {"HVM64" : "ami-074cce78125f09d61"},
             "us-west-1" : {"HVM64" : "ami-03ab7423a204da002"},
             "us-west-2" : {"HVM64" : "ami-013a129d325529d4d"}
+        }
+    },
+    "Outputs": {
+        "EIPaddress": {
+            "Description": "Elastic Ip address",
+            "Value": {"Ref": "WebServerEIP"},
+            "Export": {"Name": {"Fn::Sub": "${AWS::StackName}-EIP" }}
         }
     },
     "Resources": {     
@@ -137,9 +134,9 @@
                                             "",
                                             "<VirtualHost *:80>",
                                             "   DocumentRoot '/var/www/html'",
-                                            {"Fn::Sub": "   ServerName ${IpAddress}"},
-                                            {"Fn::Sub": "   ServerAlias ${IpAddress}"},
-                                            {"Fn::Sub": "   Redirect permanent / https://${IpAddress}/}"},
+                                            {"Fn::Sub": "   ServerName ${WebServerEIP}"},
+                                            {"Fn::Sub": "   ServerAlias ${WebServerEIP}"},
+                                            {"Fn::Sub": "   Redirect permanent / https://${WebServerEIP}/}"},
                                             "</VirtualHost>",
                                             ""
                                         ]
@@ -178,7 +175,7 @@
                                 {"Fn::Sub": "/opt/aws/bin/cfn-init --region ${AWS::Region} --stack ${AWS::StackName} --resource WebServerTemplate >> /var/log/ops.out"},
 
                                 "#### Associate Elastic Ip address for DNS record",
-                                {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id ${EipId}"},
+                                {"Fn::Sub": "aws ec2 associate-address --instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region} --allocation-id ${WebServerEIP.AllocationId}"},
 
                                 "#### Install and setup Apache web server",
                                 "yum install httpd -y",
@@ -278,6 +275,9 @@
                     }
                 ]
             }
-        }          
+        },
+        "WebServerEIP" : {
+            "Type" : "AWS::EC2::EIP"
+        }         
     }
 }
